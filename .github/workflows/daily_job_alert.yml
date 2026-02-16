@@ -1,0 +1,30 @@
+name: Daily Job Alert
+
+on:
+  schedule:
+    # Runs at 09:00 AM UTC every day (Adjust as needed)
+    - cron: '0 9 * * *'
+  workflow_dispatch:  # Allows you to run this manually from the Actions tab for testing
+
+jobs:
+  run-job-alert:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Run script
+        env:
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_RECEIVER: ${{ secrets.EMAIL_RECEIVER }}
+        run: python daily_job_alert.py
